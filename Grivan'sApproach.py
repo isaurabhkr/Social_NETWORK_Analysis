@@ -1,36 +1,39 @@
 import networkx as nx
 
-
 def edge_to_remove(G):
-	dict1=nx.edge_betweenness_centrality(G)
-	list_of_tuples = dict1.items()
-	list_of_tuples.sort(key=lambda x:x[1], reverse=True)
-	return list_of_tuples[0][0]
-	#returns a tuple (a,b)
+   dict1 = nx.edge_betweenness_centrality(G)
+   list_of_tuples =  dict1.items()
+   #print(list_of_tuples)
+   list_list=list(sorted(list_of_tuples, key=lambda x:x[1],reverse=True))
+   #need to convert list-of_tuples to list
+   return list_list[0][0]         
+   #will be returning tuple(a,b) a is source
+ 
+def girvan(G):
+    c = list(nx.connected_component_subgraphs(G))   
+    l = len(c)
+    print('The no. of connected components are',l)
+    
+    while(l==1):
+        G.remove_edge(*edge_to_remove(G))#((a,b))-->(a,b)
+        c = list(nx.connected_component_subgraphs(G))
+        l = len(c)
+        print ('The no. of connected componenets are',l)
+    return c
 
-
-def Girvan(G):
-	c= nx.connected_component_subgraphs(G)
-	#it returns the list of conneceted subgraphs
-	#if length ie=s zero then the graph doesn't have anny connected components
-	l=len(c)
-	print("The Number of connected components are",l)
-
-	while(l==1):
-		G.remove_edge(*gde_to_remove(G))
-		#((a,b)) --> (a,b)
-		c= nx.connected_component_subgraphs(G)
-		#it returns the list of conneceted subgraphs
-		#if length ie=s zero then the graph doesn't have anny connected components
-		l=len(c)
-		print("The Number of connected components are",l)
-	return c
-	#returns graph
-
-
+print('The Barbell Graph \n')
 G=nx.barbell_graph(5,0)
-ci = Girvan(G)
+c = girvan(G)
 
-for i in ci:
-	print(i.nodes())
-	print('         ')
+for i in c:
+  print(i.nodes())
+  print('......... The Number of Nodes are .........', i.number_of_nodes())
+
+print('\n\n')
+print('The Karate Graph \n')
+H=nx.karate_club_graph()
+c=girvan(H)
+
+for i in c:
+  print(i.nodes())
+  print('......... The Number of Nodes are .........', i.number_of_nodes())
